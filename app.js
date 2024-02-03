@@ -12,7 +12,7 @@ console.log("Server started.");
  
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
-var TILES = {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+var TILES = [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
 
 var Player = function(id){
 	var self = {
