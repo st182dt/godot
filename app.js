@@ -23,7 +23,7 @@ var Player = function(id){
 		pressingLeft:false,
 		pressingUp:false,
 		pressingDown:false,	
-		maxSpd:10,
+		maxSpd:80,
 	}
 	self.updatePosition = function(){
 		if(self.pressingRight)
@@ -84,4 +84,4 @@ setInterval(function(){
  
  
  
-},1000/25);
+},1000/10);
