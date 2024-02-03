@@ -12,7 +12,8 @@ console.log("Server started.");
  
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
- 
+var TILES = {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+
 var Player = function(id){
 	var self = {
 		x:250,
@@ -50,8 +51,23 @@ io.sockets.on('connection', function(socket){
 		delete SOCKET_LIST[socket.id];
 		delete PLAYER_LIST[socket.id];
 	});
+
+	socket.on('getMap',function(){
+		socket.emit('newMap',TILES);
+	});
  
 	socket.on('keyPress',function(data){
+		if(data.inputId === 'left')
+			player.pressingLeft = data.state;
+		else if(data.inputId === 'right')
+			player.pressingRight = data.state;
+		else if(data.inputId === 'up')
+			player.pressingUp = data.state;
+		else if(data.inputId === 'down')
+			player.pressingDown = data.state;
+	});
+
+	socket.on('putTile',function(data){
 		if(data.inputId === 'left')
 			player.pressingLeft = data.state;
 		else if(data.inputId === 'right')
@@ -74,7 +90,7 @@ setInterval(function(){
 			x:player.x,
 			y:player.y,
 			number:player.number
-		});		
+		});
 	}
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
