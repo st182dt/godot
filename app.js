@@ -68,14 +68,7 @@ io.sockets.on('connection', function(socket){
 	});
 
 	socket.on('putTile',function(data){
-		if(data.inputId === 'left')
-			player.pressingLeft = data.state;
-		else if(data.inputId === 'right')
-			player.pressingRight = data.state;
-		else if(data.inputId === 'up')
-			player.pressingUp = data.state;
-		else if(data.inputId === 'down')
-			player.pressingDown = data.state;
+		TILES[data.tile] = data.color;
 	});
  
  
