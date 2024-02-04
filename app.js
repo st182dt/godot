@@ -42,7 +42,12 @@ var Player = function(id){
  
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
+	
 	socket.id = Math.random();
+	for(var i in SOCKET_LIST){
+		var socket = SOCKET_LIST[i];
+		socket.emit('newPlayer',{id:socket.id});
+	}
 	SOCKET_LIST[socket.id] = socket;
  
 	var player = Player(socket.id);
