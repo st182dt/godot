@@ -25,6 +25,7 @@ var Player = function(id){
 		pressingUp:false,
 		pressingDown:false,	
 		maxSpd:80,
+		time:0,
 	}
 	self.updatePosition = function(){
 		if(self.pressingRight)
@@ -70,6 +71,7 @@ io.sockets.on('connection', function(socket){
 	socket.on('newPos',function(data){
 		player.x = data.x;
 		player.y = data.y;
+		player.time = Date.now();
 	});
 
 	socket.on('putTile',function(data){
@@ -87,15 +89,16 @@ setInterval(function(){
 		pack.push({
 			x:player.x,
 			y:player.y,
+			time:player.time,
 			number:player.number
 		});
 	}
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
-		socket.emit('newPositions',{positions:pack,time:Date.now()});
+		socket.emit('newPositions',{positions:pack});
 	}
  
  
  
  
-},1000/15);
+},1000/8);
