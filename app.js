@@ -12,7 +12,24 @@ console.log("Server started.");
  
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
+var NPC_LIST = {};
 var TILES = [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+
+var Npc = function(id){
+	var self = {
+		x:250,
+		y:250,
+		id:id,
+	}
+	self.updatePosition = function(){
+		//self.x += self.maxSpd;
+	}
+	return self;
+}
+
+var npc_id = Math.random();
+var npc = Npc(npc_id);
+NPC_LIST[npc_id] = npc;
 
 var Player = function(id){
 	var self = {
@@ -60,6 +77,16 @@ io.sockets.on('connection', function(socket){
 		});
 	}
 	socket.emit('allPlayers',{positions:players});
+	var npcs = [];
+	for(var i in NPC_LIST){
+		var npc = NPC_LIST[i];
+		npcs.push({
+			x:npc.x,
+			y:npc.y,
+			id:npc.id
+		});
+	}
+	socket.emit('allNpcs',{positions:npcs});
  
 	var player = Player(socket.id);
 	PLAYER_LIST[socket.id] = player;
