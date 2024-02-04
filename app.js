@@ -94,7 +94,7 @@ setInterval(function(){
 		pack.push({
 			x:player.x,
 			y:player.y,
-			time:player.time,
+			id:player.id,
 			number:player.number
 		});
 	}
