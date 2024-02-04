@@ -98,4 +98,4 @@ setInterval(function(){
  
  
  
-},1000/10);
+},1000/33);
