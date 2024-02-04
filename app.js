@@ -22,7 +22,10 @@ var Npc = function(id){
 		id:id,
 	}
 	self.updatePosition = function(){
-		//self.x += self.maxSpd;
+		self.x += 10;
+		if (self.x > 500) {
+			self.x = 250;
+		}
 	}
 	return self;
 }
@@ -137,9 +140,19 @@ setInterval(function(){
 			number:player.number
 		});
 	}
+	var pack2 = [];
+	for(var i in NPC_LIST){
+		var npc = NPC_LIST[i];
+		npc.updatePosition();
+		pack2.push({
+			x:npc.x,
+			y:npc.y,
+			id:npc.id
+		});
+	}
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
-		socket.emit('newPositions',{positions:pack});
+		socket.emit('newPositions',{positions:pack,positionsnpc:pack2});
 	}
  
  
