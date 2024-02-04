@@ -53,13 +53,13 @@ io.sockets.on('connection', function(socket){
 	var players = [];
 	for(var i in PLAYER_LIST){
 		var player = PLAYER_LIST[i];
-		pack.push({
+		players.push({
 			x:player.x,
 			y:player.y,
 			id:player.id
 		});
 	}
-	socket.emit('allPlayers',{positions:pack});
+	socket.emit('allPlayers',{positions:players});
  
 	var player = Player(socket.id);
 	PLAYER_LIST[socket.id] = player;
