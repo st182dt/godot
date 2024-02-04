@@ -49,6 +49,17 @@ io.sockets.on('connection', function(socket){
 		socket2.emit('newPlayer',{id:socket.id});
 	}
 	SOCKET_LIST[socket.id] = socket;
+
+	var players = [];
+	for(var i in PLAYER_LIST){
+		var player = PLAYER_LIST[i];
+		pack.push({
+			x:player.x,
+			y:player.y,
+			id:player.id
+		});
+	}
+	socket.emit('allPlayers',{positions:pack});
  
 	var player = Player(socket.id);
 	PLAYER_LIST[socket.id] = player;
