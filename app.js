@@ -92,7 +92,7 @@ setInterval(function(){
 	}
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
-		socket.emit('newPositions',pack);
+		socket.emit('newPositions',{positions:pack,time:Date.now()});
 	}
  
  
