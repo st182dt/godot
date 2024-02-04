@@ -158,4 +158,4 @@ setInterval(function(){
  
  
  
-},1000/8);
+},1000/30);
