@@ -67,6 +67,11 @@ io.sockets.on('connection', function(socket){
 			player.pressingDown = data.state;
 	});
 
+	socket.on('newPos',function(data){
+		player.x = data.x;
+		player.y = data.y;
+	});
+
 	socket.on('putTile',function(data){
 		TILES[data.tile] = data.color;
 	});
