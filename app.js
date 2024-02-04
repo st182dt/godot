@@ -87,7 +87,7 @@ io.sockets.on('connection', function(socket){
 	socket.on('newPos',function(data){
 		player.x = data.x;
 		player.y = data.y;
-		player.time = Date.now();
+		player.time = data.time;
 	});
 
 	socket.on('putTile',function(data){
@@ -106,6 +106,7 @@ setInterval(function(){
 			x:player.x,
 			y:player.y,
 			id:player.id,
+			time:player.time,
 			number:player.number
 		});
 	}
