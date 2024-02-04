@@ -45,8 +45,8 @@ io.sockets.on('connection', function(socket){
 	
 	socket.id = Math.random();
 	for(var i in SOCKET_LIST){
-		var socket = SOCKET_LIST[i];
-		socket.emit('newPlayer',{id:socket.id});
+		var socket2 = SOCKET_LIST[i];
+		socket2.emit('newPlayer',{id:socket.id});
 	}
 	SOCKET_LIST[socket.id] = socket;
  
