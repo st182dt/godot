@@ -111,7 +111,7 @@ function getNormalizedDirectionVector(startPoint, endPoint) {
   };
 
   // Calculate the magnitude (length) of the vector
-  var magnitude = Math.sqrt(directionVector.x ** 2 + directionVector.y ** 2);
+  var magnitude = Math.sqrt(Math.pow(directionVector.x,2) + Math.pow(directionVector.y,2));
 
   // Normalize the vector (divide each component by the magnitude)
   var normalizedVector = {
