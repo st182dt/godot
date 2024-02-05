@@ -12,16 +12,29 @@ console.log("Server started.");
  
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
+var NPC_LIST = {};
 
 var Player = function(id){
 	var self = {
 		x:250,
-		y:250,
-		id:id
+		y:1250,
+		id:id,
+		face:false,
+		dir:1,
+		canshoot:true,
+		type:0,
+		direction:null
 	}
 	return self;
 }
- 
+
+var npc_id = Math.random();
+var npc = Player(npc_id);
+npc.y = 250;
+NPC_LIST[npc_id] = npc;
+
+var toDelete = [];
+var toAdd = [];
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
 
@@ -41,7 +54,16 @@ io.sockets.on('connection', function(socket){
 			id:player.id
 		});
 	}
-	socket.emit('allPlayers',{positions:players});
+	var npcs = [];
+	for(var i in NPC_LIST){
+		var npc = NPC_LIST[i];
+		npcs.push({
+			x:npc.x,
+			y:npc.y,
+			id:npc.id
+		});
+	}
+	socket.emit('allPlayers',{positions:players,npcpositions:npcs});
 
 	var player = Player(socket.id);
 	PLAYER_LIST[socket.id] = player;
@@ -49,27 +71,118 @@ io.sockets.on('connection', function(socket){
 	socket.on('disconnect',function(){
 		delete SOCKET_LIST[socket.id];
 		delete PLAYER_LIST[socket.id];
+		toDelete.push({
+			id:socket.id
+		});
 	});
 
 	socket.on('newPos',function(data){
 		player.x = data.x;
 		player.y = data.y;
+		player.face = data.face;
 	});
 
 });
+
+function calculateDistance(x1, y1, x2, y2) {
+	var deltaX = x2 - x1;
+	var deltaY = y2 - y1;
+	
+	// Using the Math.sqrt() function to calculate the square root
+	var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+	
+	return distance;
+}
+
+function Vector2(x, y) {
+	var self = {
+		x:x,
+		y:y
+	}
+	return self;
+}
+
+
+function getNormalizedDirectionVector(startPoint, endPoint) {
+  // Calculate the vector from start point to end point
+  var directionVector = {
+    x: endPoint.x - startPoint.x,
+    y: endPoint.y - startPoint.y
+  };
+
+  // Calculate the magnitude (length) of the vector
+  var magnitude = Math.sqrt(directionVector.x ** 2 + directionVector.y ** 2);
+
+  // Normalize the vector (divide each component by the magnitude)
+  var normalizedVector = {
+    x: directionVector.x / magnitude,
+    y: directionVector.y / magnitude
+  };
+
+  return normalizedVector;
+}
  
 setInterval(function(){
+	var packnpc = [];
+	for(var i in NPC_LIST){
+		var npc = NPC_LIST[i];
+		if (npc.type == 0) {
+			npc.x += 24*npc.dir;
+			if (npc.x > 860 || npc.x < 200){
+				npc.dir *= -1;
+			}
+		}
+		else if (npc.type == 1){
+			npc.x += npc.direction.x * 10;
+			npc.y += npc.direction.y * 10;
+		}
+		packnpc.push({
+			x:npc.x,
+			y:npc.y,
+			id:npc.id
+		});
+	}
+
 	var pack = [];
 	for(var i in PLAYER_LIST){
 		var player = PLAYER_LIST[i];
+		if (calculateDistance(player.x,player.y,NPC_LIST[npc_id].x,NPC_LIST[npc_id].y) < 300 && player.canshoot == true){
+			var getDirection = getNormalizedDirectionVector(Vector2(player.x,player.y),Vector2(NPC_LIST[npc_id].x,NPC_LIST[npc_id].y))
+			console.log(getDirection)
+
+			console.log("SHOOT");
+			var npc_id_new = Math.random();
+			var npc = Player(npc_id_new);
+			npc.x = player.x;
+			npc.direction = getDirection;
+			npc.y = player.y;
+			npc.type = 1;
+			NPC_LIST[npc_id_new] = npc;
+			player.canshoot = false;
+			toAdd.push({
+				x:npc.x,
+				y:npc.y,
+				id:npc.id,
+				type:npc.type
+			});
+		}
 		pack.push({
 			x:player.x,
 			y:player.y,
-			id:player.id
+			id:player.id,
+			face:player.face
 		});
 	}
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
-		socket.emit('newPositions',{positions:pack});
+		if (toAdd.length > 0) {
+			socket.emit('toAdd',{ids:toAdd});
+		}
+		socket.emit('newPositions',{positions:pack,npcpositions:packnpc});
+		if (toDelete.length > 0) {
+			socket.emit('toDelete',{ids:toDelete});
+		}
 	}
-},1000/10);
+	toAdd = [];
+	toDelete = [];
+},1000/20);
