@@ -121,13 +121,20 @@ function getNormalizedDirectionVector(startPoint, endPoint) {
 
   return normalizedVector;
 }
- 
+
+var oldTime = Date.now();
+
 setInterval(function(){
+	var newTime = Date.now();
+	var delta = (newTime-oldTime)*0.001;
+	console.log(delta);
+	oldTime = newTime;
+
 	var packnpc = [];
 	for(var i in NPC_LIST){
 		var npc = NPC_LIST[i];
 		if (npc.type == 0) {
-			npc.x += 24*npc.dir;
+			npc.x += 440*npc.dir*delta;
 			if (npc.x > 860 || npc.x < 200){
 				npc.dir *= -1;
 			}
