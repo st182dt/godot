@@ -20,7 +20,7 @@ var Player = function(id){
 		y:1250,
 		id:id,
 		face:false,
-		dir:1,
+		dir:Vector2(1,0),
 		canshoot:true,
 		type:0,
 		direction:null
@@ -134,12 +134,31 @@ setInterval(function(){
 	for(var i in NPC_LIST){
 		var npc = NPC_LIST[i];
 		if (npc.type == 0) {
-			npc.x += 340*npc.dir*delta;
+			npc.x += 340*npc.dir.x*delta;
+			npc.y += 340*npc.dir.y*delta;
 			if (npc.x > 860){
-				npc.dir = -1;
+				npc.dir = Vector2(0,1);
+				npc.x = 860;
+				npc.x += 340*npc.dir.x*delta;
+				npc.y += 340*npc.dir.y*delta;
+			}
+			else if (npc.y > 860){
+				npc.dir = Vector2(-1,0);
+				npc.y = 860;
+				npc.x += 340*npc.dir.x*delta;
+				npc.y += 340*npc.dir.y*delta;
 			}
 			else if (npc.x < 260){
-				npc.dir = 1;
+				npc.dir = Vector2(0,-1);
+				npc.x = 260;
+				npc.x += 340*npc.dir.x*delta;
+				npc.y += 340*npc.dir.y*delta;
+			}
+			else if (npc.y < 260){
+				npc.dir = Vector2(1,0);
+				npc.y = 260;
+				npc.x += 340*npc.dir.x*delta;
+				npc.y += 340*npc.dir.y*delta;
 			}
 		}
 		else if (npc.type == 1){
@@ -192,7 +211,7 @@ setInterval(function(){
   	var doit = randomNum < 0.5 ? 1 : 2;
 		doit = 1;
 		if (doit == 1){
-			socket.emit('newPositions',{positions:pack,npcpositions:packnpc,diff:Date.now()});
+			socket.emit('newPositions',{positions:pack,npcpositions:packnpc,diff:delta});
 		}
 		if (toDelete.length > 0) {
 			socket.emit('toDelete',{ids:toDelete});
