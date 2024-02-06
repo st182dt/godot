@@ -134,7 +134,7 @@ setInterval(function(){
 	for(var i in NPC_LIST){
 		var npc = NPC_LIST[i];
 		if (npc.type == 0) {
-			npc.x += 440*npc.dir*delta;
+			npc.x += 340*npc.dir*delta;
 			if (npc.x > 860 || npc.x < 200){
 				npc.dir *= -1;
 			}
@@ -185,11 +185,16 @@ setInterval(function(){
 		if (toAdd.length > 0) {
 			socket.emit('toAdd',{ids:toAdd});
 		}
-		socket.emit('newPositions',{positions:pack,npcpositions:packnpc});
+		var randomNum = Math.random();
+  	var doit = randomNum < 0.5 ? 1 : 2;
+		doit = 1;
+		if (doit == 1){
+			socket.emit('newPositions',{positions:pack,npcpositions:packnpc,diff:delta});
+		}
 		if (toDelete.length > 0) {
 			socket.emit('toDelete',{ids:toDelete});
 		}
 	}
 	toAdd = [];
 	toDelete = [];
-},1000/20);
+},1000/10);
