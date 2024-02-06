@@ -122,10 +122,10 @@ function getNormalizedDirectionVector(startPoint, endPoint) {
   return normalizedVector;
 }
 
-var oldTime = Date.now();
+var oldTime = performance.now();
 
 setInterval(function(){
-	var newTime = Date.now();
+	var newTime = performance.now();
 	var delta = (newTime-oldTime)*0.001;
 	console.log(delta);
 	oldTime = newTime;
@@ -135,8 +135,11 @@ setInterval(function(){
 		var npc = NPC_LIST[i];
 		if (npc.type == 0) {
 			npc.x += 340*npc.dir*delta;
-			if (npc.x > 860 || npc.x < 200){
-				npc.dir *= -1;
+			if (npc.x > 860){
+				npc.dir = -1;
+			}
+			else if (npc.x < 260){
+				npc.dir = 1;
 			}
 		}
 		else if (npc.type == 1){
