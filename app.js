@@ -122,7 +122,6 @@ function getNormalizedDirectionVector(startPoint, endPoint) {
   return normalizedVector;
 }
 
-const performance = require('perf_hooks').performance;
 var oldTime = performance.now();
 
 setInterval(function(){
