@@ -192,7 +192,7 @@ setInterval(function(){
   	var doit = randomNum < 0.5 ? 1 : 2;
 		doit = 1;
 		if (doit == 1){
-			socket.emit('newPositions',{positions:pack,npcpositions:packnpc,diff:delta});
+			socket.emit('newPositions',{positions:pack,npcpositions:packnpc,diff:Date.now()});
 		}
 		if (toDelete.length > 0) {
 			socket.emit('toDelete',{ids:toDelete});
@@ -200,4 +200,5 @@ setInterval(function(){
 	}
 	toAdd = [];
 	toDelete = [];
+	//console.log(performance.now());
 },1000/10);
